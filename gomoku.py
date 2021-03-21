@@ -197,6 +197,29 @@ def search_max(board):
                     move_x = j
                 board[i][j] = " "
     return move_y, move_x
+
+def search_maxw(board):
+    move_y = 0
+    move_x = 0
+    maxscore = -1000000
+    for i in range(len(board)):
+        for j in range(len(board[0])):
+            if(board[i][j] == " "): 
+                # print("Row: " + str(i))
+                # print("Column: " + str(j))
+                # print("MaxScore: " + str(maxscore))
+                #print_board(board)
+                board[i][j] = "w"
+                tempscore = score(board)
+                if tempscore > maxscore:
+                    maxscore = tempscore
+                    # print(maxscore)
+                    # print("max i")
+                    # print("max j")
+                    move_y = i
+                    move_x = j
+                board[i][j] = " "
+    return move_y, move_x
     
 def score(board):
     MAX_SCORE = 100000
@@ -226,6 +249,33 @@ def score(board):
             10   * semi_open_b[3]                +  
             open_b[2] + semi_open_b[2] - open_w[2] - semi_open_w[2])
 
+def scorew(board):
+    MAX_SCORE = 100000
+    
+    open_b = {}
+    semi_open_b = {}
+    open_w = {}
+    semi_open_w = {}
+    
+    for i in range(2, 6):
+        open_b[i], semi_open_b[i] = detect_rows(board, "b", i)
+        open_w[i], semi_open_w[i] = detect_rows(board, "w", i)
+        
+    
+    if open_w[5] >= 1 or semi_open_w[5] >= 1:
+        return MAX_SCORE
+    
+    elif open_b[5] >= 1 or semi_open_b[5] >= 1:
+        return -MAX_SCORE
+        
+    return (-10000 * (open_b[4] + semi_open_b[4])+ 
+            500  * open_w[4]                     + 
+            50   * semi_open_w[4]                + 
+            -100  * open_b[3]                    + 
+            -30   * semi_open_b[3]               + 
+            50   * open_w[3]                     + 
+            10   * semi_open_w[3]                +  
+            open_w[2] + semi_open_w[2] - open_b[2] - semi_open_b[2])
     
 def is_win(board):
     full = True
@@ -632,3 +682,4 @@ if __name__ == '__main__':
     #print(is_win(board))
     ##### EXTRA TEST CASE FOR CLOSED LENGTH 5
     board = make_empty_board(8)
+    
