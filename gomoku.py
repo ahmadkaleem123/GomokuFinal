@@ -210,7 +210,7 @@ def search_maxw(board):
                 # print("MaxScore: " + str(maxscore))
                 #print_board(board)
                 board[i][j] = "w"
-                tempscore = score(board)
+                tempscore = scorew(board)
                 if tempscore > maxscore:
                     maxscore = tempscore
                     # print(maxscore)
