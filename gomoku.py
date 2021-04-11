@@ -111,10 +111,80 @@ def detect_rows(board, col, length):
             c, d = detect_row(board, col, i, 0, length, 1, 1)
             open_seq_count+=c
             semi_open_seq_count += d
-        
-    
 
     return open_seq_count, semi_open_seq_count
+
+def detect_open_3(board, col):
+  open_3s = 0
+  for i in range(8): #row
+    for j in range(8): #column
+      if j>0 and j+3<7:
+        if board[i][j-1]==' ' and board[i][j]==col and board[i][j+1]==col and board[i][j+2] ==' ' and board[i][j+3]==col and board[i][j+4]==' ':
+          open_3s += 1
+        elif board[i][j-1]==' ' and board[i][j]==col and board[i][j+1]==' ' and board[i][j+2] ==col and board[i][j+3]==col and board[i][j+4]==' ':
+          open_3s += 1
+      elif i>0 and i+3<7:
+        if board[i-1][j]==' ' and board[i][j]==col and board[i+1][j]==col and board[i+2][j] ==' ' and board[i+3][j]==col and board[i+4][j] == ' ':
+          open_3s += 1
+        elif board[i-1][j]==' ' and board[i][j]==col and board[i+1][j]==' ' and board[i+2][j] ==col and board[i+3][j]==col and board[i+4][j] == ' ':
+          open_3s += 1
+      elif i-4 > 1 and i<8 and j>= 0 and j + 4 < 7:
+        if board[i][j]==' ' and board[i-1][j+1]==col and board[i-2][j+2]==col and board[i-3][j+3] ==' ' and board[i-4][j+4]==col and board[i-5][j+5] == ' ':
+          open_3s += 1
+        elif board[i][j]==' ' and board[i-1][j+1]==col and board[i-2][j+2]==' ' and board[i-3][j+3] ==col and board[i-4][j+4]==col and board[i-5][j+5] == ' ':
+          open_3s += 1
+      elif i+4 < 7 and i>=0 and j-4 > 1 and j< 8:
+        if board[i][j]==' ' and board[i+1][j-1]==col and board[i+2][j-2]==col and board[i+3][j-3] ==' ' and board[i+4][j-4]==col and board[i+5][j-5] == ' ':
+          open_3s += 1
+        elif board[i][j]==' ' and board[i+1][j-1]==col and board[i+2][j-2]==' ' and board[i+3][j-3] ==col and board[i+4][j-4]==col and board[i+5][j-5] == ' ':
+          open_3s += 1
+      elif i+4 < 7 and i>=0 and j+4 < 7 and j>=0:
+        if board[i][j]==' ' and board[i+1][j+1]==col and board[i+2][j+2]==col and board[i+3][j+3] ==' ' and board[i+4][j+4]==col and board[i+5][j+5] == ' ':
+          open_3s += 1
+        elif board[i][j]==' ' and board[i+1][j+1]==col and board[i+2][j+2]==' ' and board[i+3][j+3] ==col and board[i+4][j+4]==col and board[i+5][j+5] == ' ':
+          open_3s += 1
+      elif i-4 > 1 and i<8 and j-4 > 1 and j<8:
+        if board[i][j]==' ' and board[i-1][j-1]==col and board[i-2][j-2]==col and board[i-3][j-3] ==' ' and board[i-4][j-4]==col and board[i-5][j-5] == ' ':
+          open_3s += 1
+        elif board[i][j]==' ' and board[i-1][j-1]==col and board[i-2][j-2]==' ' and board[i-3][j-3] ==col and board[i-4][j-4]==col and board[i-5][j-5] == ' ':
+          open_3s += 1
+  return open_3s
+
+
+def detect_open_3_rows(board, col, length=2):
+    ####CHANGE ME
+    open_seq_count, semi_open_seq_count = 0, 0
+    for i in range(len(board)):
+        #Vertical checks from x - 0, 7 and y =0.
+        a, b = detect_row(board, col, 0, i, length, 1, 0)
+        open_seq_count+=a
+        semi_open_seq_count += b
+        #Horizontal checks from y - 0,7 and x=0
+        c, d = detect_row(board, col, i, 0, length, 0, 1)
+        open_seq_count+=c
+        semi_open_seq_count += d
+        #Diagonal-Bottom-Right (RIGHT HALF) checks from x - 0,7 and y = 0 (ONLY COVERS DIAGONALS FROM 0,0  TILL 7,7)
+        a, b = detect_row(board, col, 0, i, length, 1, 1)
+        open_seq_count+=a
+        semi_open_seq_count += b
+        #Diagonal Up-Right (LEFT HALF) checks from y - 0,7 and x = 0 (ONLY COVERS DIAGONALS FROM 7,0 TILL 0,7)
+        c, d = detect_row(board, col, i, 0, length, -1, 1)
+        open_seq_count+=c
+        semi_open_seq_count += d
+        #Diagonal-Up-Right (RIGHT HALF) checks from x - 0,7 and y = 7 (ONLY COVERS DIAGONALS FROM 0,0  TILL 7,7)
+        if(i>0):
+            a, b = detect_row(board, col, 7, i, length, -1, 1)
+            open_seq_count+=a
+            semi_open_seq_count += b
+        #Diagonal Bottom-right (LEFT HALF) checks from y - 0, 7 and x = 0 (ONLY COVERS DIAGONALS FROM 1,1 till 7,6)
+        if(i>0):
+            c, d = detect_row(board, col, i, 0, length, 1, 1)
+            open_seq_count+=c
+            semi_open_seq_count += d
+
+    return open_seq_count, semi_open_seq_count
+
+
 
 
 def detect_closedrow(board, col, y_start, x_start, length, d_y, d_x):
@@ -220,7 +290,61 @@ def search_maxw(board):
                     move_x = j
                 board[i][j] = " "
     return move_y, move_x
+
+# def search_max_test(board):
+#     move_y = 0
+#     move_x = 0
+#     maxscore = -1000000
+#     for i in range(len(board)):
+#         for j in range(len(board[0])):
+#             if(board[i][j] == " "): 
+#                 # print("Row: " + str(i))
+#                 # print("Column: " + str(j))
+#                 # print("MaxScore: " + str(maxscore))
+#                 #print_board(board)
+#                 board[i][j] = "b"
+#                 tempscore = score_test(board)
+#                 if tempscore > maxscore:
+#                     maxscore = tempscore
+#                     # print(maxscore)
+#                     # print("max i")
+#                     # print("max j")
+#                     move_y = i
+#                     move_x = j
+#                 board[i][j] = " "
+#     return move_y, move_x
+
+
+# def score_test(board):
+#     MAX_SCORE = 100000
     
+#     open_b = {}
+#     semi_open_b = {}
+#     open_w = {}
+#     semi_open_w = {}
+    
+#     for i in range(2, 6):
+#         open_b[i], semi_open_b[i] = detect_rows(board, "b", i)
+#         open_w[i], semi_open_w[i] = detect_rows(board, "w", i)
+        
+#     closed_b = detect_closedrows(board, "b", 5)
+#     closed_w = detect_closedrows(board, "w", 5)
+#     if open_b[5] >= 1 or semi_open_b[5] >= 1 or closed_b >= 1:
+#         return MAX_SCORE
+    
+#     elif open_w[5] >= 1 or semi_open_w[5] >= 1 or closed_w >= 1:
+#         return -MAX_SCORE
+    
+#     return (-10000 * (open_w[4] + semi_open_w[4])+ 
+#             10  * open_b[4]                     + 
+#             50   * semi_open_b[4]                + 
+#             -100  * open_w[3]                    + 
+#             -30   * semi_open_w[3]               + 
+#             500   * open_b[3]                     + 
+#             10   * semi_open_b[3]                +  
+#             5*open_b[2] + semi_open_b[2] - 5*open_w[2] - semi_open_w[2])
+
+
 def score(board):
     MAX_SCORE = 100000
     
@@ -239,6 +363,10 @@ def score(board):
     
     elif open_w[5] >= 1 or semi_open_w[5] >= 1:
         return -MAX_SCORE
+
+    # elif open_w[4] >= 1 or semi_open_w[4] >= 1:
+    #   return -10000 * ((open_w[4] + semi_open_w[4]))
+
         
     return (-10000 * (open_w[4] + semi_open_w[4])+ 
             500  * open_b[4]                     + 
@@ -563,7 +691,7 @@ def some_tests():
 
   
             
-if __name__ == '__main__':
+# if __name__ == '__main__':
     #play_gomoku(8)
     #test_is_empty()
     #test_is_bounded()
@@ -681,5 +809,4 @@ if __name__ == '__main__':
     #print(search_max(board))
     #print(is_win(board))
     ##### EXTRA TEST CASE FOR CLOSED LENGTH 5
-    board = make_empty_board(8)
-    
+    #board = make_empty_board(8)
